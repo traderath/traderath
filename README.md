@@ -1,32 +1,57 @@
-# TradeRath
-
-TradeRath is an AI-powered trade operating platform designed to help exporters manage export operations from order to payment.
-
-This repository contains the TradeRath web application and backend services in a single codebase.
-
 ## Repository Structure
 
+TradeRath uses a monorepo structure. Frontend and backend code must remain separated into their respective directories.
+
+```text
 traderath/
-├── frontend/     # TradeRath web application
-├── backend/      # FastAPI backend and business services
-├── docs/         # Technical and product documentation
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── README.md
+│
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   └── main.py
+│   ├── tests/
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── README.md
+│
+├── docs/
+│
+├── .gitignore
 ├── LICENSE
 └── README.md
+```
 
-## Frontend
+### Repository Organization Rules
 
-The `frontend/` directory contains the public TradeRath website and user-facing application.
+When adding or modifying code, follow these rules:
 
-The frontend is designed to be deployable independently from the backend.
+1. All frontend application code must remain inside `frontend/`.
+2. All FastAPI backend code must remain inside `backend/`.
+3. Do not place frontend or backend dependency files in the repository root.
+4. Frontend dependencies such as `package.json` and `package-lock.json` belong inside `frontend/`.
+5. Python dependencies and backend configuration belong inside `backend/`.
+6. Backend application source code belongs inside `backend/app/`.
+7. Backend tests belong inside `backend/tests/`.
+8. Project-wide technical documentation belongs inside `docs/`.
+9. Never commit `.env`, API keys, passwords, credentials, tokens, certificates, or other secrets.
+10. Keep `.env.example` updated with required environment variable names, but never include real secret values.
+11. Frontend and backend must be independently runnable and deployable.
+12. Do not introduce additional root-level application folders unless the architecture explicitly requires them.
 
-See `frontend/README.md` for development and deployment instructions.
+### Current Technology Direction
 
-## Backend
+**Frontend**
+- Existing TradeRath web application
+- Independently deployable to the frontend hosting environment
 
-The `backend/` directory contains the TradeRath API and server-side application.
-
-Planned backend stack:
-
+**Backend**
 - Python
 - FastAPI
 - Pydantic
@@ -34,50 +59,23 @@ Planned backend stack:
 - PostgreSQL
 - Alembic
 
-Additional infrastructure such as Redis, background workers, object storage, and AI services will be introduced as required.
+Additional infrastructure such as Redis, background workers, object storage, and AI services should only be introduced when required.
 
-See `backend/README.md` for backend setup instructions.
+### Development Principle
 
-## Architecture
+Keep the architecture simple during the initial development stage.
 
-Frontend and backend are maintained in the same repository but can be developed and deployed independently.
+Do not introduce microservices, Kubernetes, Kafka, multiple databases, or unnecessary infrastructure unless there is a clear product requirement.
 
+The current architecture should remain:
+
+```text
 Frontend
-    |
-    | HTTPS / REST API
-    v
+    │
+    │ HTTPS / REST
+    ▼
 FastAPI Backend
-    |
-    v
+    │
+    ▼
 PostgreSQL
-
-Production deployments may use separate services and domains, for example:
-
-traderath.com
-api.traderath.com
-
-## Development Status
-
-TradeRath is currently under active development.
-
-Current focus:
-
-- Public website and frontend
-- Backend API foundation
-- Authentication and users
-- Export order management
-- Document management
-- Trade compliance workflows
-- Shipment tracking
-- Payments and realization
-- AI-assisted trade operations
-
-## Security
-
-Do not commit credentials, API keys, database passwords, private certificates, or production environment files to this repository.
-
-Use `.env` files locally and keep only `.env.example` under version control.
-
-## License
-
-Copyright © TradeRath. All rights reserved.
+```
