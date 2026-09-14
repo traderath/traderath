@@ -1,16 +1,27 @@
-## Hi there 👋
+# Traderath
 
-<!--
-**traderath/traderath** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Traderath is organized as two independent application areas so the user interface
+and server-side code can evolve, run, and deploy separately.
 
-Here are some ideas to get you started:
+## Repository structure
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+```text
+traderath/
+├── frontend/     # Browser or client-side application
+├── backend/      # API, business logic, and data access
+├── LICENSE
+└── README.md
+```
+
+- [`frontend/`](frontend/README.md) contains the user-facing application.
+- [`backend/`](backend/README.md) contains APIs and server-side services.
+
+Each area has its own README for framework-specific setup and commands. Add its
+dependency manifest, source code, tests, and local configuration within that
+folder rather than mixing frontend and backend concerns at the repository root.
+
+## Getting started
+
+The technology stack has intentionally not been selected yet. Choose the desired
+frontend and backend frameworks, then document their installation and startup
+commands in the corresponding README files.
