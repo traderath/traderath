@@ -1,21 +1,29 @@
-# Backend
+# TradeRath Backend
 
-This directory is reserved for Traderath's server-side application.
-
-Keep backend-specific files here, including:
-
-- the backend dependency manifest and lockfile;
-- API routes and business logic;
-- database models and migrations;
-- integrations with market-data or brokerage services;
-- backend configuration; and
-- unit and integration tests.
+The primary backend is a FastAPI application. The `pocketbase/` directory is a
+temporary compatibility layer for the existing frontend data model; do not add
+new product functionality there. New API code belongs in `app/` and tests belong
+in `tests/`.
 
 ## Setup
 
-A backend framework has not been selected yet. Once one is chosen, replace this
-section with the exact installation, development, test, and production startup
-commands.
+```bash
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+uvicorn app.main:app --reload --port 8000
+```
 
-Keep credentials out of version control, expose only documented API contracts,
-and validate all data received from the frontend or external services.
+## Test
+
+```bash
+pytest
+```
+
+## Legacy PocketBase development
+
+Install the version recorded in `pocketbase/.pocketbase-version` separately and
+place the executable on `PATH`; its executable and local `pb_data` directory must
+not be committed. The demo-data migration requires the
+`TRADERATH_DEMO_USER_PASSWORD` environment variable. Never use a production
+credential for local seed data.

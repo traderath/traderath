@@ -1,20 +1,22 @@
-# Frontend
+# TradeRath Frontend
 
-This directory is reserved for Traderath's user-facing application.
-
-Keep frontend-specific files here, including:
-
-- the frontend dependency manifest and lockfile;
-- pages, components, styles, and static assets;
-- frontend configuration;
-- unit and end-to-end tests; and
-- build and deployment instructions.
+The frontend is a React application built with Vite.
 
 ## Setup
 
-A frontend framework has not been selected yet. Once one is chosen, replace this
-section with the exact installation, development, test, and production build
-commands.
+```bash
+npm ci
+cp .env.example .env.local
+npm run dev
+```
 
-The frontend should communicate with the backend through a documented API rather
-than importing backend implementation code directly.
+The development server listens on <http://localhost:3000>. Configure
+`VITE_POCKETBASE_URL` for the legacy data service while those endpoints are
+migrated to the FastAPI backend.
+
+## Checks
+
+```bash
+npm run lint
+npm run build
+```
