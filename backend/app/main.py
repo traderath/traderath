@@ -1,12 +1,17 @@
 """FastAPI application entry point."""
 
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI, Request
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
 from app.core.config import Settings
 from app.core.http import RequestContextMiddleware, error_response
+from app.db.session import Database
 
 def health_check() -> dict[str, str]:
     """Report whether the API process is available."""
@@ -16,7 +21,17 @@ def health_check() -> dict[str, str]:
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Build an independent application, reading configuration at creation."""
     settings = settings or Settings.from_environment()
-    application = FastAPI(title="TradeRath API", version="0.1.0")
+    @asynccontextmanager
+    async def lifespan(application: FastAPI):
+        database = Database(settings.database_url.get_secret_value()) if settings.database_url else None
+        application.state.database = database
+        try:
+            yield
+        finally:
+            if database is not None:
+                database.close()
+
+    application = FastAPI(title="TradeRath API", version="0.1.0", lifespan=lifespan)
     application.state.settings = settings
 
     @application.exception_handler(HTTPException)
@@ -43,6 +58,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         expose_headers=["X-Request-ID"],
     )
     application.add_api_route("/health", health_check, tags=["system"])
+
+    @application.get("/health/ready", tags=["system"])
+    def readiness(request: Request):
+        database = request.app.state.database
+        try:
+            if database is None:
+                raise RuntimeError("Database not configured")
+            with database.engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
+        except (SQLAlchemyError, RuntimeError):
+            return error_response(request, 503, "DATABASE_UNAVAILABLE", "Database is unavailable.")
+        return {"status": "ok"}
     router = APIRouter(prefix="/api/v1")
     router.add_api_route("/health", health_check, tags=["system"])
     application.include_router(router)

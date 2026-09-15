@@ -14,6 +14,23 @@ jobs:
     name: Python 3.12 tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: traderath_test
+          POSTGRES_DB: traderath_test
+          # Ephemeral CI container only; no credentials or production data.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U traderath_test -d traderath_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://traderath_test@localhost:5432/traderath_test
     defaults:
       run:
         working-directory: backend
