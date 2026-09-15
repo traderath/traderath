@@ -10,6 +10,7 @@ from app.main import create_app
 
 @pytest.fixture
 def app(monkeypatch: pytest.MonkeyPatch) -> FastAPI:
+    monkeypatch.setenv("APP_ENV", "test")
     monkeypatch.setenv("CORS_ORIGINS", "http://localhost:3000")
     return create_app()
 
